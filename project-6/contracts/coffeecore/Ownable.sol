@@ -19,7 +19,7 @@ contract Ownable {
     }
 
     /// Define a function modifier 'onlyOwner'
-    modifier onlyOwner() {
+     modifier onlyOwner() virtual {
         require(isOwner());
         _;
     }
