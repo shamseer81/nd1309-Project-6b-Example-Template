@@ -1,6 +1,6 @@
 // This script is designed to test the solidity smart contract - SuppyChain.sol -- and the various functions within
 // Declare a variable and assign the compiled smart contract artifact
-var SupplyChain = artifacts.require('SupplyChain')
+var SupplyChain = artifacts.require('SupplyChain');
 const truffleAssert = require('truffle-assertions');
 
 
@@ -46,26 +46,35 @@ contract('SupplyChain', function(accounts) {
     // 1st Test
     it("Testing smart contract function harvestItem() that allows a farmer to harvest coffee", async() => {
         const supplyChain = await SupplyChain.deployed()
+        await supplyChain.addFarmer(originFarmerID);
+
         
         // Declare and Initialize a variable for event
-        var eventEmitted = false
+    
         
         // Watch the emitted event Harvested()
-       // var event = supplyChain.Harvested()
-     //   await event.watch((err, res) => {
-     //       eventEmitted = true
-     //   })
+        let eventEmitted = false;
+        var harvestEvent = await supplyChain.Harvested();
+        harvestEvent.on('data', (event) => {
+            eventEmitted = true;
+        })
+
+        console.log( 'eventEmitted ',eventEmitted, '\n');
 
         // Mark an item as Harvested by calling function harvestItem()
         var result = await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, 
             originFarmLongitude, productNotes , {from:originFarmerID});
-        truffleAssert.eventNotEmitted (result,'Watch the emitted event Harvested(')
+
+
+     
+
+       // truffleAssert.eventNotEmitted (result,'Watch the emitted event Harvested(');
         // Retrieve the just now saved item from blockchain by calling function fetchItem()
-        const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
-        const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
+        const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc, {from:originFarmerID})
+        const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc, {from:originFarmerID})
 
         // Verify the result set
-
+        console.log('resultBufferOne[0]' , resultBufferOne[0]);
         assert.equal(resultBufferOne[0], sku, 'Error: Invalid item SKU')
         assert.equal(resultBufferOne[1], upc, 'Error: Invalid item UPC')
         assert.equal(resultBufferOne[2], originFarmerID, 'Error: Missing or Invalid ownerID')

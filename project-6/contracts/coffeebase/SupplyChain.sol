@@ -165,12 +165,33 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
   string memory _originFarmName, string memory _originFarmInformation, 
   string memory _originFarmLatitude, string memory _originFarmLongitude, 
   string memory  _productNotes) public 
+  onlyFarmer
   {
     // Add the new item as part of Harvest
-    
+     items[_upc] = Item({
+        sku: sku,
+        upc: upc,
+        ownerID: _originFarmerID,
+        originFarmerID: _originFarmerID,
+        originFarmName: _originFarmName,
+        originFarmInformation: _originFarmInformation,
+        originFarmLatitude: _originFarmLatitude,
+        originFarmLongitude: _originFarmLongitude,
+        productID: _upc + sku,
+        productNotes: _productNotes,
+        productPrice: uint(0),
+        itemState: defaultState,
+        distributorID: address(0),
+        retailerID: address(0),
+        consumerID: address(0)
+        });
+
+   
     // Increment sku
     sku = sku + 1;
     // Emit the appropriate event
+    emit Harvested(_upc);
+
     
   }
 
