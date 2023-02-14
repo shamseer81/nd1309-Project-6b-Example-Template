@@ -263,7 +263,8 @@ contract SupplyChain is Ownable, FarmerRole, DistributorRole, RetailerRole, Cons
     // Transfer money to farmer
     payable (items[_upc].originFarmerID).transfer(items[_upc].productPrice);
 
-    
+    emit Sold(_upc);
+
     // emit the appropriate event
     
   }
