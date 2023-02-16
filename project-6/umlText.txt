@@ -1,0 +1,378 @@
+
+
+
+
+
+
+
+ 
+ 
+ UmlClassDiagram
+ 
+
+ 
+ 0
+ 
+ Migrations
+ contractsMigrations.sol
+ 
+ Public:
+    owner: address
+    last_completed_migration: uint
+ 
+ Public:
+     <<modifier>> restricted()
+     constructor()
+     setCompleted(completed: uint) <<restricted>>
+     upgrade(new_address: address) <<restricted>>
+
+
+ 
+ 0->0
+ 
+ 
+
+
+ 
+ 1
+ 
+ ConsumerRole
+ contractscoffeeaccesscontrolConsumerRole.sol
+ 
+ Private:
+    consumers: Roles.Role
+ 
+ Internal:
+     _addConsumer(account: address)
+     _removeConsumer(account: address)
+ Public:
+     <<event>> ConsumerAdded(account: address)
+     <<event>> ConsumerRemoved(account: address)
+     <<modifier>> onlyConsumer()
+     constructor()
+     isConsumer(account: address): bool
+     addConsumer(account: address) <<onlyConsumer>>
+     renounceConsumer()
+
+
+ 
+ 6
+ 
+ <<Struct>>
+ Role
+ contractscoffeeaccesscontrolRoles.sol
+ 
+ bearer: mapping(address=>bool)
+
+
+ 
+ 1->6
+ 
+ 
+
+
+ 
+ 5
+ 
+ <<Library>>
+ Roles
+ contractscoffeeaccesscontrolRoles.sol
+ 
+ Internal:
+     add(role: Role, account: address)
+     remove(role: Role, account: address)
+     has(role: Role, account: address): bool
+
+
+ 
+ 1->5
+ 
+ 
+
+
+ 
+ 2
+ 
+ DistributorRole
+ contractscoffeeaccesscontrolDistributorRole.sol
+ 
+ Private:
+    distributors: Roles.Role
+ 
+ Internal:
+     _addDistributor(account: address)
+     _removeDistributor(account: address)
+ Public:
+     <<event>> DistributorAdded(account: address)
+     <<event>> DistributorRemoved(account: address)
+     <<modifier>> onlyDistributor()
+     constructor()
+     isDistributor(account: address): bool
+     addDistributor(account: address) <<onlyDistributor>>
+     renounceDistributor()
+
+
+ 
+ 2->6
+ 
+ 
+
+
+ 
+ 2->5
+ 
+ 
+
+
+ 
+ 3
+ 
+ FarmerRole
+ contractscoffeeaccesscontrolFarmerRole.sol
+ 
+ Private:
+    farmers: Roles.Role
+ 
+ Internal:
+     _addFarmer(account: address)
+     _removeFarmer(account: address)
+ Public:
+     <<event>> FarmerAdded(account: address)
+     <<event>> FarmerRemoved(account: address)
+     <<modifier>> onlyFarmer()
+     constructor()
+     isFarmer(account: address): bool
+     addFarmer(account: address) <<onlyFarmer>>
+     renounceFarmer()
+
+
+ 
+ 3->6
+ 
+ 
+
+
+ 
+ 3->5
+ 
+ 
+
+
+ 
+ 4
+ 
+ RetailerRole
+ contractscoffeeaccesscontrolRetailerRole.sol
+ 
+ Private:
+    retailers: Roles.Role
+ 
+ Internal:
+     _addRetailer(account: address)
+     _removeRetailer(account: address)
+ Public:
+     <<event>> RetailerAdded(account: address)
+     <<event>> RetailerRemoved(account: address)
+     <<modifier>> onlyRetailer()
+     constructor()
+     isRetailer(account: address): bool
+     addRetailer(account: address) <<onlyRetailer>>
+     renounceRetailer()
+
+
+ 
+ 4->6
+ 
+ 
+
+
+ 
+ 4->5
+ 
+ 
+
+
+ 
+ 6->5
+ 
+ 
+
+
+ 
+ 5->6
+ 
+ 
+
+
+ 
+ 8
+ 
+ <<Enum>>
+ State
+ contractscoffeebaseSupplyChain.sol
+ 
+ Harvested: 0
+ Processed: 1
+ Packed: 2
+ ForSale: 3
+ Sold: 4
+ Shipped: 5
+ Received: 6
+ Purchased: 7
+
+
+ 
+ 7
+ 
+ SupplyChain
+ contractscoffeebaseSupplyChain.sol
+ 
+ Public:
+    ownerAdd: address
+    upc: uint
+    sku: uint
+    items: mapping(uint=>Item)
+    itemsHistory: mapping(uint=>string[])
+    defaultState: State
+ 
+ Public:
+     <<payable>> buyItem(_upc: uint) <<forSale, paidEnough, checkValue, onlyDistributor>>
+     <<event>> Harvested(upc: uint)
+     <<event>> Processed(upc: uint)
+     <<event>> Packed(upc: uint)
+     <<event>> ForSale(upc: uint)
+     <<event>> Sold(upc: uint)
+     <<event>> Shipped(upc: uint)
+     <<event>> Received(upc: uint)
+     <<event>> Purchased(upc: uint)
+     <<modifier>> onlyOwner()
+     <<modifier>> verifyCaller(_address: address)
+     <<modifier>> paidEnough(_price: uint)
+     <<modifier>> checkValue(_upc: uint)
+     <<modifier>> harvested(_upc: uint)
+     <<modifier>> processed(_upc: uint)
+     <<modifier>> packed(_upc: uint)
+     <<modifier>> forSale(_upc: uint)
+     <<modifier>> sold(_upc: uint)
+     <<modifier>> shipped(_upc: uint)
+     <<modifier>> received(_upc: uint)
+     <<modifier>> purchased(_upc: uint)
+     constructor()
+     kill()
+     harvestItem(_upc: uint, _originFarmerID: address, _originFarmName: string, _originFarmInformation: string, _originFarmLatitude: string, _originFarmLongitude: string, _productNotes: string) <<onlyFarmer>>
+     processItem(_upc: uint) <<harvested, verifyCaller, onlyFarmer>>
+     packItem(_upc: uint) <<processed, verifyCaller, onlyFarmer>>
+     sellItem(_upc: uint, _price: uint) <<packed, verifyCaller, onlyFarmer>>
+     shipItem(_upc: uint) <<sold, verifyCaller, onlyDistributor>>
+     receiveItem(_upc: uint) <<shipped, onlyRetailer>>
+     purchaseItem(_upc: uint) <<received, onlyConsumer>>
+     fetchItemBufferOne(_upc: uint): (itemSKU: uint, itemUPC: uint, ownerID: address, originFarmerID: address, originFarmName: string, originFarmInformation: string, originFarmLatitude: string, originFarmLongitude: string)
+     fetchItemBufferTwo(_upc: uint): (itemSKU: uint, itemUPC: uint, productID: uint, productNotes: string, productPrice: uint, itemState: uint, distributorID: address, retailerID: address, consumerID: address)
+
+
+ 
+ 8->7
+ 
+ 
+
+
+ 
+ 9
+ 
+ <<Struct>>
+ Item
+ contractscoffeebaseSupplyChain.sol
+ 
+ sku: uint
+ upc: uint
+ ownerID: address
+ originFarmerID: address
+ originFarmName: string
+ originFarmInformation: string
+ originFarmLatitude: string
+ originFarmLongitude: string
+ productID: uint
+ productNotes: string
+ productPrice: uint
+ itemState: State
+ distributorID: address
+ retailerID: address
+ consumerID: address
+
+
+ 
+ 9->8
+ 
+ 
+
+
+ 
+ 9->7
+ 
+ 
+
+
+ 
+ 7->1
+ 
+ 
+
+
+ 
+ 7->2
+ 
+ 
+
+
+ 
+ 7->3
+ 
+ 
+
+
+ 
+ 7->4
+ 
+ 
+
+
+ 
+ 7->8
+ 
+ 
+
+
+ 
+ 7->9
+ 
+ 
+
+
+ 
+ 10
+ 
+ Ownable
+ contractscoffeecoreOwnable.sol
+ 
+ Private:
+    origOwner: address
+ 
+ Internal:
+     _transferOwnership(newOwner: address)
+ Public:
+     <<event>> TransferOwnership(oldOwner: address, newOwner: address)
+     <<modifier>> onlyOwner()
+     constructor()
+     owner(): address
+     isOwner(): bool
+     renounceOwnership() <<onlyOwner>>
+     transferOwnership(newOwner: address) <<onlyOwner>>
+
+
+ 
+ 7->10
+ 
+ 
+
+
+

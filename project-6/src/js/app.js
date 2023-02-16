@@ -111,6 +111,7 @@ App = {
             App.fetchItemBufferOne();
             App.fetchItemBufferTwo();
             App.fetchEvents();
+            web3.eth.defaultAccount = web3.eth.accounts[0];
 
         });
 
