@@ -1,6 +1,13 @@
 # Supply chain & data auditing
 
 This repository containts an Ethereum DApp that demonstrates a Supply Chain flow between a Seller and Buyer. The user story is similar to any commonly used supply chain process. A Seller can add items to the inventory system stored in the blockchain. A Buyer can purchase such items from the inventory system. Additionally a Seller can mark an item as Shipped, and similarly a Buyer can mark an item as Received.
+The versions of libraries used by the projects are as given below.
+Truffle v5.7.5 (core: 5.7.5)
+Ganache v7.7.3
+Solidity - >0.5.17 (solc-js)
+Node v18.14.0
+Web3.js v1.8.2
+
 
 ## Part 1 
 ### Project write-up - UML
