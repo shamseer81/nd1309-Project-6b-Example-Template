@@ -18,7 +18,7 @@ Web3.js v1.8.2
 ![Sequence](sequence.jpg)
 
 #### State
-![State](State.jpg)
+![State](State.JPG)
 
 #### Classes
 ![Data-Model](datamodel.jpg)
@@ -55,7 +55,7 @@ Lightweight development only node server that serves a web app. Used for hosting
 
 ## Part 3
 ### Smart contract has associated tests
-![Tests](tests.jpg)
+![Tests](tests.JPG)
 
 ## Part 4
 ### Deploy smart contract on a public test network
